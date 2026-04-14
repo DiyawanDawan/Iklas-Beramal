@@ -12,6 +12,22 @@ export const metadata = {
   title: "Ikhlas Beramal - Solusi Digital Madrasah",
   description: "Solusi Digital Madrasah yang Cepat, Akurat, dan Modern. Memudahkan tata kelola administrasi pendidikan madrasah.",
   keywords: "Ikhlas Beramal, solusi digital madrasah, administrasi madrasah, kementerian agama, diyawan",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Ikhlas Beramal",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+};
+
+export const viewport = {
+  themeColor: "#0ea5e9",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({ children }) {
