@@ -1,20 +1,25 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useMemo, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { usePeserta, useSettings } from "@/hooks/usePeserta";
 import { formatTTL } from "@/lib/constants";
 import toast from "react-hot-toast";
 import Navbar from "@/components/Navbar";
-import { FiPlus, FiEdit2, FiTrash2, FiSave, FiX, FiSearch } from "react-icons/fi";
+import PrintLayout from "@/components/PrintLayout";
+import { FiPlus, FiEdit2, FiTrash2, FiSave, FiX, FiSearch, FiPrinter, FiLoader } from "react-icons/fi";
 import { HiOutlineUsers, HiOutlineClipboardList } from "react-icons/hi";
 
 export default function PesertaPage() {
+  const router = useRouter();
   const { pesertaList, addPeserta, updatePeserta, deletePeserta, deleteMultiple, generateNoPeserta, isLoaded } = usePeserta();
   const { settings } = useSettings();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
   const [editingId, setEditingId] = useState(null);
+  const [isPrinting, setIsPrinting] = useState(false);
+  const [printIds, setPrintIds] = useState([]);
 
   const { register, handleSubmit, reset, setValue } = useForm({
     defaultValues: {
@@ -132,6 +137,46 @@ export default function PesertaPage() {
     reset();
   };
 
+  const handleDirectPrint = async (idsToPrint) => {
+    if (idsToPrint.length === 0) return;
+    
+    setIsPrinting(true);
+    setPrintIds(idsToPrint);
+    const toastId = toast.loading("Sedang memproses PDF...");
+
+    // Tunggu render DOM area tersembunyi
+    await new Promise(r => setTimeout(r, 800));
+
+    try {
+      const { generatePDF } = await import("@/lib/pdfGenerator");
+      const fileName = `kartu-ujian-${settings.namaLembaga.replace(/\s+/g, "-")}.pdf`;
+      await generatePDF("direct-print-area", fileName);
+      toast.success("PDF Berhasil diunduh!", { id: toastId });
+    } catch (err) {
+      console.error(err);
+      toast.error("Gagal cetak: " + err.message, { id: toastId });
+    } finally {
+      setIsPrinting(false);
+      setPrintIds([]);
+    }
+  };
+
+  const handlePrintOne = (id) => {
+    handleDirectPrint([id]);
+  };
+
+  const handlePrintAll = () => {
+    if (selectedIds.length > 0) {
+      handleDirectPrint(selectedIds);
+    } else {
+      handleDirectPrint(pesertaList.map(p => p.id));
+    }
+  };
+
+  const selectedPesertaToPrint = useMemo(() => {
+    return pesertaList.filter(p => printIds.includes(p.id));
+  }, [pesertaList, printIds]);
+
   if (!isLoaded) {
     return (
       <>
@@ -228,11 +273,22 @@ export default function PesertaPage() {
               <span style={{ fontSize: "14px", color: "#94a3b8", fontWeight: 600 }}>
                 Total: {pesertaList.length} peserta
               </span>
-              {selectedIds.length > 0 && (
+              {selectedIds.length > 0 ? (
+              <div style={{ display: "flex", gap: "8px" }}>
                 <button onClick={handleDeleteSelected} className="btn-danger btn-sm">
                   <FiTrash2 size={12} /> Hapus ({selectedIds.length})
                 </button>
-              )}
+                <button onClick={handlePrintAll} disabled={isPrinting} className="btn-primary btn-sm">
+                  {isPrinting ? <FiLoader size={12} className="animate-spin" /> : <FiPrinter size={12} />} Cetak ({selectedIds.length})
+                </button>
+              </div>
+            ) : (
+              pesertaList.length > 0 && (
+                <button onClick={handlePrintAll} disabled={isPrinting} className="btn-secondary btn-sm">
+                  {isPrinting ? <FiLoader size={12} className="animate-spin" /> : <FiPrinter size={12} />} Cetak Semua ({pesertaList.length})
+                </button>
+              )
+            )}
             </div>
             <div style={{ position: "relative" }}>
               <FiSearch size={16} style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "#64748b", zIndex: 1 }} />
@@ -323,6 +379,29 @@ export default function PesertaPage() {
                         >
                           <FiTrash2 size={14} />
                         </button>
+                        <button
+                          onClick={() => handlePrintOne(peserta.id)}
+                          disabled={isPrinting}
+                          style={{
+                            background: "rgba(16, 185, 129, 0.15)",
+                            color: "#10b981",
+                            border: "none",
+                            padding: "4px 10px",
+                            borderRadius: "6px",
+                            cursor: isPrinting ? "not-allowed" : "pointer",
+                            fontSize: "12px",
+                            fontWeight: 600,
+                            transition: "all 0.2s",
+                            opacity: isPrinting ? 0.5 : 1
+                          }}
+                          title="Cetak Kartu"
+                        >
+                          {isPrinting && printIds.includes(peserta.id) ? (
+                            <FiLoader size={14} className="animate-spin" />
+                          ) : (
+                            <FiPrinter size={14} />
+                          )}
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -339,6 +418,16 @@ export default function PesertaPage() {
             <div style={{ marginBottom: "12px" }}><HiOutlineClipboardList size={48} color="#475569" /></div>
             <p style={{ fontSize: "16px", fontWeight: 600 }}>Belum ada data peserta</p>
             <p style={{ fontSize: "13px", marginTop: "4px" }}>Tambahkan peserta menggunakan form di atas</p>
+          </div>
+        )}
+
+        {/* Hidden Area for direct background printing */}
+        {isPrinting && (
+          <div id="direct-print-area" style={{ position: "absolute", left: "-9999px", top: "-9999px", opacity: 0 }}>
+             <PrintLayout 
+                pesertaList={selectedPesertaToPrint}
+                settings={settings}
+             />
           </div>
         )}
       </main>

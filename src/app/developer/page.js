@@ -36,17 +36,27 @@ export default function DeveloperPage() {
       <main style={{ maxWidth: "800px", margin: "0 auto", padding: "64px 24px" }}>
         <div className="fade-in" style={{ textAlign: "center" }}>
           <div style={{
-            width: "120px",
-            height: "120px",
+            width: "140px",
+            height: "140px",
             margin: "0 auto 24px",
             borderRadius: "50%",
+            padding: "4px",
             background: "linear-gradient(135deg, #059669, #10b981)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
             boxShadow: "0 0 40px rgba(16, 185, 129, 0.4)",
+            position: "relative",
+            overflow: "hidden"
           }}>
-            <HiOutlineCode color="#fff" size={56} />
+            <img 
+              src="/developer.jpeg" 
+              alt="Diyawan"
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: "50%",
+                objectFit: "cover",
+                border: "3px solid #1e293b"
+              }}
+            />
           </div>
 
           <h1 style={{
@@ -81,12 +91,10 @@ export default function DeveloperPage() {
           </div>
 
           {/* Social Links */}
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-            gap: "16px",
-            marginBottom: "48px"
-          }}>
+          <div 
+            className="grid-responsive grid-res-3"
+            style={{ marginBottom: "48px" }}
+          >
             {SOCIAL_LINKS.map((social) => {
               const Icon = social.icon;
               return (
@@ -117,7 +125,7 @@ export default function DeveloperPage() {
             })}
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
+          <div className="grid-responsive grid-res-2" style={{ gap: "20px" }}>
             {/* Contact Card */}
             <div className="glass-card" style={{ padding: "28px", textAlign: "left" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>

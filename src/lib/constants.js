@@ -14,7 +14,7 @@ export function formatTanggalIndonesia(dateStr) {
 
 export function formatTTL(tempat, tanggalLahir) {
   if (!tempat && !tanggalLahir) return "-";
-  const tgl = tanggalLahir ? formatTanggalPendek(tanggalLahir) : "";
+  const tgl = tanggalLahir ? formatTanggalIndonesia(tanggalLahir) : "";
   return `${tempat || ""}${tempat && tgl ? ", " : ""}${tgl}`;
 }
 

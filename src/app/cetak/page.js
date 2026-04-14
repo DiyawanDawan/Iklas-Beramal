@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
+import { useState, useRef, useMemo, useEffect, useCallback } from "react";
 import { usePeserta, useSettings } from "@/hooks/usePeserta";
 import PrintLayout from "@/components/PrintLayout";
 import Navbar from "@/components/Navbar";
@@ -9,6 +10,7 @@ import { FiDownload, FiEye, FiEyeOff, FiLoader } from "react-icons/fi";
 import { HiOutlinePrinter, HiOutlineClipboardList } from "react-icons/hi";
 
 export default function CetakPage() {
+  const searchParams = useSearchParams();
   const { pesertaList, isLoaded: pesertaLoaded } = usePeserta();
   const { settings, isLoaded: settingsLoaded } = useSettings();
   const [selectedIds, setSelectedIds] = useState([]);
@@ -18,10 +20,41 @@ export default function CetakPage() {
 
   const isLoaded = pesertaLoaded && settingsLoaded;
 
+  // 1. Sync IDs from URL
+  useEffect(() => {
+    const idsParam = searchParams.get("ids");
+    if (idsParam) {
+      const ids = idsParam.split(",").map(id => parseInt(id));
+      setSelectedIds(ids);
+    }
+  }, [searchParams]);
+
   const selectedPeserta = useMemo(() => {
     if (selectedIds.length === 0) return pesertaList;
     return pesertaList.filter((p) => selectedIds.includes(p.id));
   }, [pesertaList, selectedIds]);
+
+  const handleDownloadPDF = useCallback(async () => {
+    if (selectedPeserta.length === 0) {
+      toast.error("Tidak ada peserta untuk dicetak!");
+      return;
+    }
+
+    setIsGenerating(true);
+    // Kita tetap paksa render area cetak sebentar
+    await new Promise((r) => setTimeout(r, 500));
+
+    try {
+      const { generatePDF } = await import("@/lib/pdfGenerator");
+      await generatePDF("print-area", `kartu-ujian-${settings.namaLembaga.replace(/\s+/g, "-")}.pdf`);
+      toast.success("PDF berhasil diunduh!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Gagal generate PDF: " + err.message);
+    } finally {
+      setIsGenerating(false);
+    }
+  }, [selectedPeserta, settings]);
 
   const toggleSelect = (id) => {
     setSelectedIds((prev) =>
@@ -34,30 +67,6 @@ export default function CetakPage() {
       setSelectedIds([]);
     } else {
       setSelectedIds(pesertaList.map((p) => p.id));
-    }
-  };
-
-  const handleDownloadPDF = async () => {
-    if (selectedPeserta.length === 0) {
-      toast.error("Tidak ada peserta untuk dicetak!");
-      return;
-    }
-
-    setIsGenerating(true);
-    setShowPreview(true);
-
-    // Wait for render
-    await new Promise((r) => setTimeout(r, 500));
-
-    try {
-      const { generatePDF } = await import("@/lib/pdfGenerator");
-      await generatePDF("print-area", `kartu-ujian-${settings.namaLembaga.replace(/\s+/g, "-")}.pdf`);
-      toast.success("PDF berhasil diunduh!");
-    } catch (err) {
-      console.error(err);
-      toast.error("Gagal generate PDF: " + err.message);
-    } finally {
-      setIsGenerating(false);
     }
   };
 
@@ -94,9 +103,6 @@ export default function CetakPage() {
           }}>
             <div style={{ marginBottom: "12px" }}><HiOutlineClipboardList size={48} color="#475569" /></div>
             <p style={{ fontSize: "16px", fontWeight: 600 }}>Belum ada data peserta</p>
-            <p style={{ fontSize: "13px", marginTop: "4px" }}>
-              Tambahkan peserta terlebih dahulu di halaman Data Peserta
-            </p>
           </div>
         ) : (
           <>
@@ -110,113 +116,55 @@ export default function CetakPage() {
                     </strong>
                   </p>
                   <p style={{ fontSize: "12px", color: "#64748b" }}>
-                    Halaman PDF: {Math.ceil((selectedIds.length === 0 ? pesertaList.length : selectedIds.length) / 4)}
+                    Halaman PDF: {Math.ceil(selectedPeserta.length / 4)}
                   </p>
                 </div>
                 <div style={{ display: "flex", gap: "12px" }}>
-                  <button
-                    onClick={() => setShowPreview(!showPreview)}
-                    className="btn-secondary"
-                  >
+                  <button onClick={() => setShowPreview(!showPreview)} className="btn-secondary">
                     {showPreview ? <><FiEyeOff size={14} /> Sembunyikan Preview</> : <><FiEye size={14} /> Tampilkan Preview</>}
                   </button>
-                  <button
-                    onClick={handleDownloadPDF}
-                    disabled={isGenerating}
-                    className="btn-primary"
-                  >
-                    {isGenerating ? (
-                      <><FiLoader size={14} className="animate-spin" /> Generating PDF...</>
-                    ) : (
-                      <><FiDownload size={14} /> Download PDF</>
-                    )}
+                  <button onClick={handleDownloadPDF} disabled={isGenerating} className="btn-primary">
+                    {isGenerating ? <><FiLoader size={14} className="animate-spin" /> Generating...</> : <><FiDownload size={14} /> Download PDF</>}
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* Peserta Selection */}
+            {/* Selection */}
             <div className="glass-card" style={{ padding: "20px", marginBottom: "24px" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px" }}>
-                <h3 style={{ fontSize: "14px", fontWeight: 700, color: "#e2e8f0" }}>
-                  Pilih Peserta untuk Dicetak
-                </h3>
+                <h3 style={{ fontSize: "14px", fontWeight: 700, color: "#e2e8f0" }}>Pilih Peserta</h3>
                 <button onClick={selectAll} className="btn-secondary btn-sm">
-                  {selectedIds.length === pesertaList.length ? "Batal Pilih Semua" : "Pilih Semua"}
+                  {selectedIds.length === pesertaList.length ? "Batal Semua" : "Pilih Semua"}
                 </button>
               </div>
-              <div style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-                gap: "8px",
-                maxHeight: "300px",
-                overflowY: "auto",
-              }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: "8px", maxHeight: "200px", overflowY: "auto" }}>
                 {pesertaList.map((p) => (
-                  <label
-                    key={p.id}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px",
-                      padding: "10px 14px",
-                      borderRadius: "8px",
-                      cursor: "pointer",
-                      transition: "all 0.2s",
-                      background: selectedIds.includes(p.id)
-                        ? "rgba(16, 185, 129, 0.1)"
-                        : "rgba(15, 23, 42, 0.3)",
-                      border: selectedIds.includes(p.id)
-                        ? "1px solid rgba(16, 185, 129, 0.3)"
-                        : "1px solid transparent",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.length === 0 || selectedIds.includes(p.id)}
-                      onChange={() => toggleSelect(p.id)}
-                      style={{ accentColor: "#10b981", cursor: "pointer" }}
-                    />
-                    <div>
-                      <div style={{ fontSize: "13px", fontWeight: 600, color: "#e2e8f0" }}>{p.nama}</div>
-                      <div style={{ fontSize: "11px", color: "#64748b" }}>{p.noPeserta}</div>
-                    </div>
+                  <label key={p.id} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px 12px", borderRadius: "8px", cursor: "pointer", background: "rgba(15, 23, 42, 0.3)", border: selectedIds.includes(p.id) ? "1px solid #10b981" : "1px solid transparent" }}>
+                    <input type="checkbox" checked={selectedIds.includes(p.id)} onChange={() => toggleSelect(p.id)} />
+                    <span style={{ fontSize: "13px" }}>{p.nama}</span>
                   </label>
                 ))}
               </div>
             </div>
 
-            {/* Preview */}
-            {showPreview && (
-              <div className="fade-in" style={{
-                background: "#374151",
-                borderRadius: "16px",
-                padding: "24px",
-                overflowX: "auto",
-              }}>
-                <h3 style={{ fontSize: "14px", color: "#94a3b8", marginBottom: "16px", fontWeight: 600, display: "flex", alignItems: "center", gap: "8px" }}>
-                  <HiOutlineClipboardList size={16} /> Preview Kartu Ujian
-                </h3>
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PrintLayout
-                    ref={printRef}
-                    pesertaList={selectedPeserta}
-                    settings={settings}
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Hidden print area for PDF generation when not in preview */}
-            {!showPreview && (
-              <div style={{ position: "absolute", left: "-9999px", top: "-9999px" }}>
-                <PrintLayout
-                  ref={printRef}
-                  pesertaList={selectedPeserta}
-                  settings={settings}
-                />
-              </div>
-            )}
+            {/* AREA CETAK TUNGGAL (Harus selalu ada untuk jspdf) */}
+            <div style={{ 
+              marginTop: "32px", 
+              display: showPreview ? "flex" : "block",
+              justifyContent: "center",
+              background: showPreview ? "#374151" : "transparent",
+              padding: showPreview ? "24px" : "0",
+              borderRadius: "16px",
+              // Jika tidak show preview, kita sembunyikan tapi tetap di DOM
+              ...(showPreview ? {} : { position: "absolute", left: "-9999px", top: "-9999px", opacity: 0 })
+            }}>
+              <PrintLayout
+                ref={printRef}
+                pesertaList={selectedPeserta}
+                settings={settings}
+              />
+            </div>
           </>
         )}
       </main>
