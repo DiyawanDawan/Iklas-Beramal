@@ -41,12 +41,13 @@ export default function CetakPage() {
     }
 
     setIsGenerating(true);
-    // Kita tetap paksa render area cetak sebentar
-    await new Promise((r) => setTimeout(r, 500));
+    // Kita tetap paksa render area cetak sebentar agar html2canvas menangkap DOM yang matang
+    await new Promise((r) => setTimeout(r, 800));
 
     try {
       const { generatePDF } = await import("@/lib/pdfGenerator");
-      await generatePDF("print-area", `kartu-ujian-${settings.namaLembaga.replace(/\s+/g, "-")}.pdf`);
+      const fileName = `kartu-ujian-${settings.namaLembaga.replace(/\s+/g, "-")}.pdf`;
+      await generatePDF("print-area", fileName);
       toast.success("PDF berhasil diunduh!");
     } catch (err) {
       console.error(err);
@@ -74,8 +75,11 @@ export default function CetakPage() {
     return (
       <>
         <Navbar />
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
-          <div style={{ color: "#64748b" }}>Memuat data...</div>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-10 h-10 border-3 border-primary-500/20 border-t-primary-500 rounded-full animate-spin" />
+            <span className="text-dark-500 text-sm">Memuat data...</span>
+          </div>
         </div>
       </>
     );
@@ -84,9 +88,9 @@ export default function CetakPage() {
   return (
     <>
       <Navbar />
-      <main style={{ maxWidth: "1100px", margin: "0 auto", padding: "32px 24px" }}>
+      <main className="main-container max-w-6xl">
         <div className="fade-in">
-          <h1 className="page-title" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <h1 className="page-title flex items-center gap-3">
             <HiOutlinePrinter size={28} /> Cetak Kartu Ujian
           </h1>
           <p className="page-subtitle">
@@ -95,75 +99,82 @@ export default function CetakPage() {
         </div>
 
         {pesertaList.length === 0 ? (
-          <div className="glass-card" style={{
-            padding: "48px",
-            textAlign: "center",
-            color: "#64748b",
-            marginTop: "32px",
-          }}>
-            <div style={{ marginBottom: "12px" }}><HiOutlineClipboardList size={48} color="#475569" /></div>
-            <p style={{ fontSize: "16px", fontWeight: 600 }}>Belum ada data peserta</p>
+          <div className="glass-card p-12 text-center text-dark-500 mt-8">
+            <div className="mb-3 flex justify-center opacity-50"><HiOutlineClipboardList size={48} /></div>
+            <p className="text-base font-bold">Belum ada data peserta</p>
+            <p className="text-[13px] mt-1">Tambahkan peserta terlebih dahulu di halaman Data Peserta</p>
           </div>
         ) : (
           <>
             {/* Controls */}
-            <div className="glass-card slide-up" style={{ padding: "24px", marginTop: "28px", marginBottom: "24px" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
+            <div className="glass-card slide-up p-6 mt-7 mb-6">
+              <div className="flex items-center justify-between flex-wrap gap-4">
                 <div>
-                  <p style={{ fontSize: "14px", color: "#94a3b8", marginBottom: "4px" }}>
-                    Peserta terpilih: <strong style={{ color: "#10b981" }}>
+                  <p className="text-sm text-dark-400 mb-1 font-bold">
+                    Peserta terpilih: <span className="text-primary-500">
                       {selectedIds.length === 0 ? `Semua (${pesertaList.length})` : selectedIds.length}
-                    </strong>
+                    </span>
                   </p>
-                  <p style={{ fontSize: "12px", color: "#64748b" }}>
-                    Halaman PDF: {Math.ceil(selectedPeserta.length / 4)}
+                  <p className="text-[12px] text-dark-500">
+                    Estimasi Halaman: {Math.ceil(selectedPeserta.length / 4)} Halaman A4
                   </p>
                 </div>
-                <div style={{ display: "flex", gap: "12px" }}>
+                <div className="flex gap-3">
                   <button onClick={() => setShowPreview(!showPreview)} className="btn-secondary">
-                    {showPreview ? <><FiEyeOff size={14} /> Sembunyikan Preview</> : <><FiEye size={14} /> Tampilkan Preview</>}
+                    {showPreview ? <><FiEyeOff size={14} /> Tutup Preview</> : <><FiEye size={14} /> Lihat Preview</>}
                   </button>
                   <button onClick={handleDownloadPDF} disabled={isGenerating} className="btn-primary">
-                    {isGenerating ? <><FiLoader size={14} className="animate-spin" /> Generating...</> : <><FiDownload size={14} /> Download PDF</>}
+                    {isGenerating ? <><FiLoader size={14} className="animate-spin" /> Memproses...</> : <><FiDownload size={14} /> Download PDF</>}
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* Selection */}
-            <div className="glass-card" style={{ padding: "20px", marginBottom: "24px" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px" }}>
-                <h3 style={{ fontSize: "14px", fontWeight: 700, color: "#e2e8f0" }}>Pilih Peserta</h3>
+            {/* Selection Grid */}
+            <div className="glass-card p-6 mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-bold text-dark-200">
+                  Pilih Peserta untuk Dicetak
+                </h3>
                 <button onClick={selectAll} className="btn-secondary btn-sm">
                   {selectedIds.length === pesertaList.length ? "Batal Semua" : "Pilih Semua"}
                 </button>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: "8px", maxHeight: "200px", overflowY: "auto" }}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
                 {pesertaList.map((p) => (
-                  <label key={p.id} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px 12px", borderRadius: "8px", cursor: "pointer", background: "rgba(15, 23, 42, 0.3)", border: selectedIds.includes(p.id) ? "1px solid #10b981" : "1px solid transparent" }}>
-                    <input type="checkbox" checked={selectedIds.includes(p.id)} onChange={() => toggleSelect(p.id)} />
-                    <span style={{ fontSize: "13px" }}>{p.nama}</span>
+                  <label 
+                    key={p.id} 
+                    className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all border ${selectedIds.includes(p.id) ? 'bg-primary-500/10 border-primary-500/30' : 'bg-dark-900/30 border-transparent hover:bg-dark-900/50'}`}
+                  >
+                    <input 
+                      type="checkbox" 
+                      className="accent-primary-500 w-4 h-4 cursor-pointer"
+                      checked={selectedIds.includes(p.id)} 
+                      onChange={() => toggleSelect(p.id)} 
+                    />
+                    <div className="truncate">
+                      <div className="text-[13px] font-bold text-dark-100 truncate">{p.nama}</div>
+                      <div className="text-[11px] text-dark-500 font-mono">{p.noPeserta}</div>
+                    </div>
                   </label>
                 ))}
               </div>
             </div>
 
-            {/* AREA CETAK TUNGGAL (Harus selalu ada untuk jspdf) */}
-            <div style={{ 
-              marginTop: "32px", 
-              display: showPreview ? "flex" : "block",
-              justifyContent: "center",
-              background: showPreview ? "#374151" : "transparent",
-              padding: showPreview ? "24px" : "0",
-              borderRadius: "16px",
-              // Jika tidak show preview, kita sembunyikan tapi tetap di DOM
-              ...(showPreview ? {} : { position: "absolute", left: "-9999px", top: "-9999px", opacity: 0 })
-            }}>
-              <PrintLayout
-                ref={printRef}
-                pesertaList={selectedPeserta}
-                settings={settings}
-              />
+            {/* AREA CETAK / PREVIEW */}
+            <div className={`mt-8 ${showPreview ? 'fade-in bg-dark-700/50 p-6 rounded-2xl flex justify-center shadow-inner' : 'absolute -left-[9999px] -top-[9999px] opacity-0'}`}>
+              <div className="relative">
+                {showPreview && (
+                  <div className="flex items-center gap-2 text-dark-400 text-[12px] mb-4 font-bold">
+                    <HiOutlineClipboardList className="text-primary-500" /> Preview Hasil Cetakan (A4)
+                  </div>
+                )}
+                <PrintLayout
+                  ref={printRef}
+                  pesertaList={selectedPeserta}
+                  settings={settings}
+                />
+              </div>
             </div>
           </>
         )}

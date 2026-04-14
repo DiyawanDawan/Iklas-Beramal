@@ -28,6 +28,12 @@
   --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
+@keyframes loading {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(200%); }
+  100% { transform: translateX(-100%); }
+}
+
 @layer base {
   * {
     box-sizing: border-box;
@@ -58,6 +64,22 @@
 }
 
 @layer components {
+  /* Layout Classes */
+  .main-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+
+  .content-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Glassmorphism */
   .glass-card {
     background: rgba(30, 41, 59, 0.7);
     backdrop-filter: blur(16px);
@@ -71,8 +93,15 @@
     backdrop-filter: blur(12px);
     border: 1px solid rgba(148, 163, 184, 0.08);
     border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+  .glass-card-light:hover {
+    background: rgba(241, 245, 249, 0.08);
+    transform: translateY(-4px);
+    border-color: rgba(16, 185, 129, 0.2);
   }
 
+  /* Buttons */
   .btn-primary {
     background: linear-gradient(135deg, #059669, #10b981);
     color: white;
@@ -87,18 +116,18 @@
     align-items: center;
     gap: 8px;
     box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+    text-decoration: none;
   }
-  .btn-primary:hover {
+  .btn-primary:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
   }
-  .btn-primary:active {
+  .btn-primary:active:not(:disabled) {
     transform: translateY(0);
   }
   .btn-primary:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    transform: none;
   }
 
   .btn-secondary {
@@ -114,8 +143,9 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    text-decoration: none;
   }
-  .btn-secondary:hover {
+  .btn-secondary:hover:not(:disabled) {
     background: rgba(71, 85, 105, 0.8);
     transform: translateY(-1px);
   }
@@ -134,8 +164,9 @@
     align-items: center;
     gap: 8px;
     box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+    text-decoration: none;
   }
-  .btn-danger:hover {
+  .btn-danger:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
   }
@@ -146,6 +177,7 @@
     border-radius: 8px;
   }
 
+  /* Form Elements */
   .input-field {
     width: 100%;
     padding: 10px 16px;
@@ -161,9 +193,6 @@
     border-color: #10b981;
     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
   }
-  .input-field::placeholder {
-    color: #64748b;
-  }
 
   .input-label {
     display: block;
@@ -174,20 +203,7 @@
     letter-spacing: 0.02em;
   }
 
-  .stat-card {
-    background: rgba(30, 41, 59, 0.5);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(148, 163, 184, 0.08);
-    border-radius: 16px;
-    padding: 24px;
-    transition: all 0.3s ease;
-  }
-  .stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-    border-color: rgba(16, 185, 129, 0.2);
-  }
-
+  /* Typography */
   .page-title {
     font-size: 28px;
     font-weight: 800;
@@ -204,6 +220,19 @@
     margin-top: 4px;
   }
 
+  .hero-title {
+    font-size: 42px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #10b981, #34d399, #6ee7b7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  /* Tables */
   .table-container {
     overflow-x: auto;
     border-radius: 12px;
@@ -232,14 +261,37 @@
     border-bottom: 1px solid rgba(148, 163, 184, 0.05);
     color: #e2e8f0;
   }
-  .table-container tbody tr {
-    transition: background 0.2s ease;
-  }
   .table-container tbody tr:hover {
     background: rgba(16, 185, 129, 0.05);
   }
 
-  /* Fade in animation */
+  /* Grid Utilities */
+  .grid-responsive {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) {
+    .grid-res-2 { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1024px) {
+    .grid-res-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-res-4 { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  /* Responsive Visibility */
+  .hidden-md {
+    display: none !important;
+  }
+  @media (min-width: 768px) {
+    .hidden-md { display: flex !important; }
+    .show-md { display: none !important; }
+  }
+  @media (max-width: 767px) {
+    .show-md { display: flex !important; }
+  }
+
+  /* Animations */
   .fade-in {
     animation: fadeIn 0.5s ease-out;
   }
@@ -256,54 +308,156 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* Pulse glow for active elements */
-  .glow-pulse {
-    animation: glowPulse 2s ease-in-out infinite alternate;
-  }
-  @keyframes glowPulse {
-    from { box-shadow: 0 0 5px rgba(16, 185, 129, 0.2); }
-    to { box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
-  }
-
-  /* Responsive Utilities */
-  .grid-responsive {
-    display: grid;
-    gap: 16px;
-    grid-template-columns: 1fr;
-  }
-
-  @media (min-width: 640px) {
-    .grid-res-2 { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  @media (min-width: 1024px) {
-    .grid-res-3 { grid-template-columns: repeat(3, 1fr); }
-    .grid-res-4 { grid-template-columns: repeat(4, 1fr); }
-  }
-
-  /* Visibility Helpers */
-  .hidden-md {
-    display: none !important;
-  }
-  @media (min-width: 768px) {
-    .hidden-md { display: flex !important; }
-    .show-md { display: none !important; }
-  }
-  @media (max-width: 767px) {
-    .show-md { display: flex !important; }
-  }
-
   .mobile-menu-anim {
     animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
-
   @keyframes slideDown {
     from { opacity: 0; transform: translateY(-20px); }
     to { opacity: 1; transform: translateY(0); }
   }
+
+  /* Developer & Profile Photo */
+  .profile-photo-wrapper {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 24px;
+    border-radius: 50%;
+    padding: 4px;
+    background: linear-gradient(135deg, #059669, #10b981);
+    boxShadow: 0 0 40px rgba(16, 185, 129, 0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .profile-photo {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #1e293b;
+  }
+  /* Exam Card (A4 Specific - Official Look - Fits 8 per page) */
+  .kartu-container {
+    width: 350px;
+    height: 275px;
+    border: 1.5px solid #000;
+    padding: 0;
+    margin: 2px;
+    background: #fff;
+    font-family: "Times New Roman", serif;
+    color: #000;
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    /* overflow: hidden; -- Dihapus agar garis kop surat tidak terpotong */
+  }
+
+  .kartu-header {
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #000; /* Garis tipis atas */
+    margin-bottom: 6px; /* Memberi ruang untuk garis tebal */
+    position: relative;
+  }
+
+  .kartu-header::after {
+    content: '';
+    position: absolute;
+    bottom: -5px; /* Jarak yang lebih jelas antar garis */
+    left: 0;
+    right: 0;
+    height: 2px; /* Dikecilkan dari 3px agar tidak terlalu tebal */
+    background: #000;
+  }
+
+  .header-logo {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+    margin-right: 10px;
+  }
+
+  .header-text {
+    flex-grow: 1;
+    text-align: center;
+    line-height: 1.1;
+  }
+
+  .kartu-body {
+    padding: 2px 14px 10px 14px; /* Dikurangi padding atasnya agar judul naik */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .kartu-title {
+    font-size: 13px;
+    font-weight: bold;
+    text-decoration: underline;
+    text-align: center;
+    margin-bottom: 6px; /* Dikurangi sedikit agar lebih rapat dengan tabel */
+    text-transform: uppercase;
+  }
+
+  .kartu-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  .kartu-table td {
+    padding: 2.5px 0;
+    vertical-align: top;
+  }
+
+  .kartu-footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0 14px 12px 14px;
+  }
+
+  .photo-box {
+    width: 60px;
+    height: 80px;
+    border: 1px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    background: #fff;
+    color: #999; /* Dibuat lebih samar (buram) */
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .ttd-box {
+    text-align: left;
+    font-size: 12px;
+    width: 180px;
+    line-height: 1.2;
+  }
+
+  /* Printing Area */
+  .print-page {
+    width: 794px; /* A4 width */
+    min-height: 1123px; /* A4 height */
+    padding: 30px;
+    background: #fff;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+    align-content: start;
+    justify-content: center;
+    box-sizing: border-box;
+  }
 }
 
-/* Print styles - hide everything except kartu */
 @media print {
   body {
     background: white !important;

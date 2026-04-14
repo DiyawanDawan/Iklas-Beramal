@@ -23,7 +23,6 @@ export default function Navbar() {
   const [dropOpen, setDropOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -50,124 +49,47 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="no-print" style={{
-      position: "sticky",
-      top: 0,
-      zIndex: 50,
-      background: "rgba(15, 23, 42, 0.85)",
-      backdropFilter: "blur(20px)",
-      borderBottom: "1px solid rgba(148, 163, 184, 0.08)",
-    }}>
-      <div style={{
-        maxWidth: "1200px",
-        margin: "0 auto",
-        padding: "0 24px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        height: "64px",
-      }}>
+    <nav className="no-print sticky top-0 z-50 bg-dark-900/85 backdrop-blur-xl border-b border-white/10 h-16">
+      <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "12px",
-          textDecoration: "none",
-        }}>
-          <div style={{
-            width: "36px",
-            height: "36px",
-            borderRadius: "10px",
-            background: "linear-gradient(135deg, #059669, #10b981)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "18px",
-            boxShadow: "0 4px 14px rgba(16, 185, 129, 0.3)",
-          }}>
-            <IoSchoolOutline color="#fff" size={20} />
+        <Link href="/" className="flex items-center gap-3 no-underline group">
+          <div className="w-9 h-9 rounded-xl bg-linear-to-br from-primary-600 to-primary-400 flex items-center justify-center shadow-lg shadow-primary-500/30 group-hover:scale-105 transition-transform">
+            <IoSchoolOutline className="text-white text-xl" />
           </div>
-          <div>
-            <div style={{
-              fontSize: "16px",
-              fontWeight: 800,
-              color: "#f1f5f9",
-              letterSpacing: "-0.02em",
-              lineHeight: "1.2",
-            }}>Ikhlas Beramal</div>
-            <div style={{
-              fontSize: "10px",
-              color: "#64748b",
-              fontWeight: 500,
-              letterSpacing: "0.05em",
-              textTransform: "uppercase",
-            }}>Solusi Digital Madrasah</div>
+          <div className="flex flex-col">
+            <span className="text-base font-black text-dark-50 tracking-tight leading-tight">Ikhlas Beramal</span>
+            <span className="text-[10px] text-dark-400 font-bold tracking-widest uppercase">Solusi Digital Madrasah</span>
           </div>
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden-md" style={{ alignItems: "center", gap: "4px" }}>
+        <div className="hidden-md items-center gap-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             
             if (item.isDropdown) {
               const isChildActive = item.items.some(sub => pathname === sub.href);
               return (
-                <div key={item.label} ref={dropdownRef} style={{ position: "relative" }}>
+                <div key={item.label} ref={dropdownRef} className="relative">
                   <button
                     onClick={() => setDropOpen(!dropOpen)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "6px",
-                      padding: "8px 16px",
-                      borderRadius: "10px",
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      color: isChildActive || dropOpen ? "#10b981" : "#94a3b8",
-                      background: isChildActive || dropOpen ? "rgba(16, 185, 129, 0.1)" : "transparent",
-                      border: "none",
-                      cursor: "pointer",
-                      transition: "all 0.2s ease",
-                    }}
+                    className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[13px] font-bold transition-all cursor-pointer border-none ${isChildActive || dropOpen ? "text-primary-500 bg-primary-500/10" : "text-dark-400 hover:text-dark-100"}`}
                   >
-                    <Icon size={16} />
+                    <Icon className="text-base" />
                     {item.label}
-                    <HiChevronDown size={14} style={{ transform: dropOpen ? "rotate(180deg)" : "none", transition: "0.2s" }} />
+                    <HiChevronDown className={`text-sm transition-transform duration-200 ${dropOpen ? "rotate-180" : ""}`} />
                   </button>
                   
                   {dropOpen && (
-                    <div className="mobile-menu-anim" style={{
-                      position: "absolute",
-                      top: "calc(100% + 8px)",
-                      left: "0",
-                      width: "200px",
-                      background: "#1e293b",
-                      border: "1px solid rgba(148, 163, 184, 0.1)",
-                      borderRadius: "12px",
-                      padding: "8px",
-                      boxShadow: "0 10px 30px rgba(0,0,0,0.4)",
-                    }}>
+                    <div className="mobile-menu-anim absolute top-[calc(100%+8px)] left-0 w-52 bg-dark-800 border border-white/10 rounded-xl p-2 shadow-2xl shadow-black">
                       {item.items.map(sub => (
                         <Link
                           key={sub.href}
                           href={sub.href}
                           onClick={() => setDropOpen(false)}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "10px",
-                            padding: "10px 12px",
-                            borderRadius: "8px",
-                            fontSize: "13px",
-                            fontWeight: 600,
-                            textDecoration: "none",
-                            color: pathname === sub.href ? "#10b981" : "#cbd5e1",
-                            background: pathname === sub.href ? "rgba(16, 185, 129, 0.1)" : "transparent",
-                            transition: "all 0.2s",
-                          }}
+                          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] font-bold no-underline transition-all ${pathname === sub.href ? "text-primary-500 bg-primary-500/10" : "text-dark-200 hover:bg-white/5 hover:text-white"}`}
                         >
-                          <sub.icon size={16} />
+                          <sub.icon className="text-base" />
                           {sub.label}
                         </Link>
                       ))}
@@ -182,101 +104,44 @@ export default function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  padding: "8px 16px",
-                  borderRadius: "10px",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  textDecoration: "none",
-                  transition: "all 0.2s ease",
-                  color: isActive ? "#10b981" : "#94a3b8",
-                  background: isActive ? "rgba(16, 185, 129, 0.1)" : "transparent",
-                }}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold no-underline transition-all ${isActive ? "text-primary-500 bg-primary-500/10" : "text-dark-400 hover:text-dark-100"}`}
               >
-                <Icon size={16} />
+                <Icon className="text-base" />
                 {item.label}
               </Link>
             );
           })}
           
-          <div style={{ width: "1px", height: "20px", background: "rgba(148, 163, 184, 0.1)", margin: "0 8px" }}></div>
+          <div className="w-[1px] h-5 bg-white/10 mx-2"></div>
           
           <Link
             href="/settings"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "36px",
-              height: "36px",
-              borderRadius: "10px",
-              color: pathname === "/settings" ? "#10b981" : "#94a3b8",
-              background: pathname === "/settings" ? "rgba(16, 185, 129, 0.1)" : "transparent",
-              transition: "all 0.2s ease",
-            }}
+            className={`flex items-center justify-center w-9 h-9 rounded-xl transition-all ${pathname === "/settings" ? "text-primary-500 bg-primary-500/10" : "text-dark-400 hover:text-dark-100"}`}
             title="Pengaturan"
           >
-            <HiOutlineCog size={20} />
+            <HiOutlineCog className="text-xl" />
           </Link>
         </div>
 
         {/* Mobile Toggle */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="show-md"
-          style={{
-            background: "rgba(148, 163, 184, 0.1)",
-            border: "1px solid rgba(148, 163, 184, 0.1)",
-            borderRadius: "10px",
-            color: mobileOpen ? "#10b981" : "#94a3b8",
-            cursor: "pointer",
-            width: "40px",
-            height: "40px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+          className="show-md bg-white/5 border border-white/10 rounded-xl text-dark-400 cursor-pointer w-10 h-10 items-center justify-center"
         >
-          {mobileOpen ? <HiOutlineX size={22} /> : <HiOutlineMenu size={22} />}
+          {mobileOpen ? <HiOutlineX size={22} className="text-primary-500" /> : <HiOutlineMenu size={22} />}
         </button>
       </div>
 
       {/* Mobile Menu Dropdown */}
       {mobileOpen && (
-        <div 
-          className="show-md mobile-menu-anim" 
-          style={{
-            flexDirection: "column",
-            padding: "8px 16px 24px",
-            background: "rgba(15, 23, 42, 0.95)",
-            backdropFilter: "blur(20px)",
-            borderBottom: "1px solid rgba(148, 163, 184, 0.1)",
-            position: "absolute",
-            top: "64px",
-            left: 0,
-            right: 0,
-            zIndex: 49,
-            maxHeight: "calc(100vh - 64px)",
-            overflowY: "auto",
-          }}
-        >
+        <div className="show-md mobile-menu-anim flex-col px-4 pb-6 pt-2 bg-dark-900/95 backdrop-blur-2xl border-b border-white/10 absolute top-16 left-0 right-0 z-49 max-h-[calc(100vh-64px)] overflow-y-auto shadow-2xl">
           {navItems.map((item) => {
             const Icon = item.icon;
             
             if (item.isDropdown) {
               return (
                 <div key={item.label}>
-                  <div style={{ 
-                    padding: "14px 16px 8px", 
-                    fontSize: "12px", 
-                    fontWeight: 700, 
-                    color: "#64748b",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.05em"
-                  }}>
+                  <div className="px-4 pt-3.5 pb-2 text-[10px] uppercase font-black text-dark-500 tracking-widest">
                     {item.label}
                   </div>
                   {item.items.map(sub => (
@@ -284,21 +149,9 @@ export default function Navbar() {
                       key={sub.href}
                       href={sub.href}
                       onClick={() => setMobileOpen(false)}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "12px",
-                        padding: "12px 16px 12px 24px",
-                        borderRadius: "12px",
-                        fontSize: "15px",
-                        fontWeight: 600,
-                        textDecoration: "none",
-                        color: pathname === sub.href ? "#10b981" : "#cbd5e1",
-                        background: pathname === sub.href ? "rgba(16, 185, 129, 0.1)" : "transparent",
-                        marginBottom: "4px",
-                      }}
+                      className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold no-underline transition-all mb-1 ${pathname === sub.href ? "text-primary-500 bg-primary-500/10" : "text-dark-200"}`}
                     >
-                      <sub.icon size={18} />
+                      <sub.icon className="text-lg" />
                       {sub.label}
                     </Link>
                   ))}
@@ -311,31 +164,10 @@ export default function Navbar() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                  padding: "14px 16px",
-                  borderRadius: "12px",
-                  fontSize: "15px",
-                  fontWeight: 600,
-                  textDecoration: "none",
-                  color: pathname === item.href ? "#10b981" : "#cbd5e1",
-                  background: pathname === item.href ? "rgba(16, 185, 129, 0.1)" : "transparent",
-                  marginBottom: "4px",
-                }}
+                className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold no-underline transition-all mb-1 ${pathname === item.href ? "text-primary-500 bg-primary-500/10" : "text-dark-200"}`}
               >
-                <div style={{
-                  width: "32px",
-                  height: "32px",
-                  borderRadius: "8px",
-                  background: pathname === item.href ? "rgba(16, 185, 129, 0.2)" : "rgba(148, 163, 184, 0.05)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: pathname === item.href ? "#10b981" : "#94a3b8",
-                }}>
-                  <Icon size={18} />
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${pathname === item.href ? "bg-primary-500/20 text-primary-500" : "bg-white/5 text-dark-500"}`}>
+                  <Icon className="text-lg" />
                 </div>
                 {item.label}
               </Link>
@@ -345,20 +177,7 @@ export default function Navbar() {
           <Link
             href="/settings"
             onClick={() => setMobileOpen(false)}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              padding: "14px 16px",
-              borderRadius: "12px",
-              fontSize: "15px",
-              fontWeight: 600,
-              textDecoration: "none",
-              color: pathname === "/settings" ? "#10b981" : "#cbd5e1",
-              background: pathname === "/settings" ? "rgba(16, 185, 129, 0.1)" : "transparent",
-              marginTop: "8px",
-              borderTop: "1px solid rgba(148, 163, 184, 0.05)"
-            }}
+            className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold no-underline transition-all mt-2 border-t border-white/5 ${pathname === "/settings" ? "text-primary-500 bg-primary-500/10" : "text-dark-200"}`}
           >
             <HiOutlineCog size={18} />
             Pengaturan Lembaga

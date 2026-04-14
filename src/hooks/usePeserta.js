@@ -1,23 +1,40 @@
 "use client";
 
 import { useLocalStorage } from "./useLocalStorage";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
 const DEFAULT_SETTINGS = {
   namaUjian: "UJIAN MADRASAH",
   tahunPelajaran: "2025/2026",
-  namaLembaga: "MTs. NEGERI 2 LOMBOK TENGAH",
+  namaLembaga: "MTS UCUP",
+  nsm: "1234567890",
   prefixNoPeserta: "26-19-02-2-0002",
-  tempatCetak: "Jelantik",
+  tempatCetak: "Lombok Tengah",
   tanggalCetak: "2026-04-20",
   jabatanKepala: "Kepala Madrasah",
-  namaKepala: "H. Diguna, S.Ag",
-  nipKepala: "197112311997031008",
+  namaKepala: "UCUP",
+  nipKepala: "-",
   logoUrl: "",
+  geminiApiKey: "AIzaSyApER02PfMmiwDIKytQc9G6qea0hviXf98",
 };
 
 export function useSettings() {
   const [settings, setSettings, , isLoaded] = useLocalStorage("kartu-ujian-settings", DEFAULT_SETTINGS);
+
+  // MIGRASI OTOMATIS: Beresin masalah API Key kosong di LocalStorage
+  useEffect(() => {
+    if (isLoaded && settings) {
+      const isApiKeyEmpty = !settings.geminiApiKey || settings.geminiApiKey === "";
+      const hasDefaultKey = !!DEFAULT_SETTINGS.geminiApiKey;
+
+      if (isApiKeyEmpty && hasDefaultKey) {
+        setSettings((prev) => ({ 
+          ...prev, 
+          geminiApiKey: DEFAULT_SETTINGS.geminiApiKey 
+        }));
+      }
+    }
+  }, [isLoaded, settings, setSettings]);
 
   const updateSettings = useCallback(
     (newSettings) => {

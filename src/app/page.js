@@ -21,28 +21,10 @@ export default function HomePage() {
     return (
       <>
         <Navbar />
-        <div style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "80vh",
-        }}>
-          <div style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "16px",
-          }}>
-            <div style={{
-              width: "48px",
-              height: "48px",
-              border: "3px solid rgba(16, 185, 129, 0.2)",
-              borderTopColor: "#10b981",
-              borderRadius: "50%",
-              animation: "spin 1s linear infinite",
-            }} />
-            <span style={{ color: "#64748b", fontSize: "14px" }}>Memuat data...</span>
-            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        <div className="flex items-center justify-center min-h-[80vh]">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-12 h-12 border-3 border-primary-500/20 border-t-primary-500 rounded-full animate-spin" />
+            <span className="text-dark-500 text-sm">Memuat data...</span>
           </div>
         </div>
       </>
@@ -52,233 +34,111 @@ export default function HomePage() {
   return (
     <>
       <Navbar />
-      <main style={{ maxWidth: "1000px", margin: "0 auto", padding: "32px 24px" }}>
-        {/* Hero */}
-        <div className="fade-in" style={{ textAlign: "center", marginBottom: "48px" }}>
-          <div style={{
-            marginBottom: "16px",
-            display: "flex",
-            justifyContent: "center",
-          }}>
-            <div style={{
-              width: "72px",
-              height: "72px",
-              borderRadius: "20px",
-              background: "linear-gradient(135deg, #059669, #10b981)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 8px 30px rgba(16, 185, 129, 0.3)",
-            }}>
-              <IoSchoolOutline color="#fff" size={36} />
+      <main className="main-container">
+        {/* Hero Section */}
+        <div className="fade-in content-center mb-12">
+          <div className="mb-4 flex justify-center">
+            <div className="w-18 h-18 rounded-3xl bg-linear-to-br from-primary-600 to-primary-400 flex items-center justify-center shadow-2xl shadow-primary-500/30">
+              <IoSchoolOutline className="text-white text-4xl" />
             </div>
           </div>
-          <h1 style={{
-            fontSize: "42px",
-            fontWeight: 900,
-            background: "linear-gradient(135deg, #10b981, #34d399, #6ee7b7)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-            letterSpacing: "-0.04em",
-            lineHeight: "1.1",
-            marginBottom: "12px",
-          }}>
-            Ikhlas Beramal
-          </h1>
-          <p style={{
-            fontSize: "16px",
-            color: "#64748b",
-            maxWidth: "520px",
-            margin: "0 auto",
-            lineHeight: "1.6",
-          }}>
+          <h1 className="hero-title">Ikhlas Beramal</h1>
+          <p className="max-w-md text-dark-500 text-base leading-relaxed">
             Solusi Digital Madrasah yang Cepat, Akurat, dan Modern.
             Mulai langkah transformasi digital Anda hari ini.
           </p>
         </div>
 
-        {/* Stats */}
-        <div 
-          className="grid-responsive grid-res-2 grid-res-3"
-          style={{ marginBottom: "40px" }}
-        >
-          <div className="stat-card slide-up">
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: "12px",
-            }}>
-              <div style={{
-                width: "44px", height: "44px", borderRadius: "12px",
-                background: "rgba(16, 185, 129, 0.1)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <HiOutlineUsers size={24} color="#10b981" />
+        {/* Stats Grid */}
+        <div className="grid-responsive grid-res-2 grid-res-3 mb-10">
+          <div className="glass-card slide-up p-6">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-11 h-11 rounded-xl bg-primary-500/10 flex items-center justify-center">
+                <HiOutlineUsers className="text-primary-500 text-2xl" />
               </div>
-              <span style={{
-                fontSize: "11px",
-                fontWeight: 600,
-                color: totalPeserta > 0 ? "#10b981" : "#f59e0b",
-                background: totalPeserta > 0 ? "rgba(16,185,129,0.1)" : "rgba(245,158,11,0.1)",
-                padding: "4px 10px",
-                borderRadius: "20px",
-              }}>
+              <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${totalPeserta > 0 ? "text-primary-500 bg-primary-500/10" : "text-amber-500 bg-amber-500/10"}`}>
                 {totalPeserta > 0 ? "Terisi" : "Kosong"}
               </span>
             </div>
-            <div style={{ fontSize: "32px", fontWeight: 800, color: "#f1f5f9", letterSpacing: "-0.02em" }}>
-              {totalPeserta}
-            </div>
-            <div style={{ fontSize: "13px", color: "#64748b", marginTop: "4px" }}>Total Peserta</div>
+            <div className="text-3xl font-black text-dark-100 tracking-tight">{totalPeserta}</div>
+            <div className="text-[13px] text-dark-500 mt-1 font-medium">Total Peserta</div>
           </div>
 
-          <div className="stat-card slide-up" style={{ animationDelay: "0.1s" }}>
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: "12px",
-            }}>
-              <div style={{
-                width: "44px", height: "44px", borderRadius: "12px",
-                background: "rgba(96, 165, 250, 0.1)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <HiOutlineDocumentText size={24} color="#60a5fa" />
+          <div className="glass-card slide-up p-6 animation-delay-100">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-11 h-11 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                <HiOutlineDocumentText className="text-blue-500 text-2xl" />
               </div>
-              <span style={{
-                fontSize: "11px",
-                fontWeight: 600,
-                color: "#60a5fa",
-                background: "rgba(96,165,250,0.1)",
-                padding: "4px 10px",
-                borderRadius: "20px",
-              }}>
-                A4
-              </span>
+              <span className="text-[11px] font-bold text-blue-500 bg-blue-500/10 px-2.5 py-1 rounded-full">A4</span>
             </div>
-            <div style={{ fontSize: "32px", fontWeight: 800, color: "#f1f5f9", letterSpacing: "-0.02em" }}>
-              {totalHalaman}
-            </div>
-            <div style={{ fontSize: "13px", color: "#64748b", marginTop: "4px" }}>Halaman PDF</div>
+            <div className="text-3xl font-black text-dark-100 tracking-tight">{totalHalaman}</div>
+            <div className="text-[13px] text-dark-500 mt-1 font-medium">Halaman PDF</div>
           </div>
 
-          <div className="stat-card slide-up" style={{ animationDelay: "0.2s" }}>
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: "12px",
-            }}>
-              <div style={{
-                width: "44px", height: "44px", borderRadius: "12px",
-                background: "rgba(245, 158, 11, 0.1)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <HiOutlineCog size={24} color="#f59e0b" />
+          <div className="glass-card slide-up p-6 animation-delay-200">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-11 h-11 rounded-xl bg-amber-500/10 flex items-center justify-center">
+                <HiOutlineCog className="text-amber-500 text-2xl" />
               </div>
-              <span style={{
-                fontSize: "11px",
-                fontWeight: 600,
-                color: settingsComplete ? "#10b981" : "#f59e0b",
-                background: settingsComplete ? "rgba(16,185,129,0.1)" : "rgba(245,158,11,0.1)",
-                padding: "4px 10px",
-                borderRadius: "20px",
-              }}>
+              <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${settingsComplete ? "text-primary-500 bg-primary-500/10" : "text-amber-500 bg-amber-500/10"}`}>
                 {settingsComplete ? "Lengkap" : "Belum Lengkap"}
               </span>
             </div>
-            <div style={{ fontSize: "18px", fontWeight: 700, color: "#f1f5f9", marginTop: "8px" }}>
+            <div className="text-lg font-bold text-dark-100 mt-2 truncate">
               {settings.namaLembaga || "Belum diatur"}
             </div>
-            <div style={{ fontSize: "13px", color: "#64748b", marginTop: "4px" }}>Pengaturan Lembaga</div>
+            <div className="text-[13px] text-dark-500 mt-1 font-medium">Pengaturan Lembaga</div>
           </div>
         </div>
 
         {/* Quick Actions */}
-        <h2 style={{
-          fontSize: "18px",
-          fontWeight: 700,
-          color: "#e2e8f0",
-          marginBottom: "16px",
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-        }}>
-          <FiZap size={18} color="#f59e0b" /> Aksi Cepat
+        <h2 className="text-lg font-bold text-dark-200 mb-4 flex items-center gap-2">
+          <FiZap className="text-amber-500" /> Aksi Cepat
         </h2>
-        <div 
-          className="grid-responsive grid-res-2 grid-res-3"
-          style={{ marginBottom: "40px" }}
-        >
-          <Link href="/settings" style={{ textDecoration: "none" }}>
-            <div className="glass-card-light" style={{
-              padding: "24px",
-              cursor: "pointer",
-              transition: "all 0.3s ease",
-              borderLeft: "4px solid #f59e0b",
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
-                <FiSettings size={22} color="#f59e0b" />
-                <h3 style={{ fontSize: "15px", fontWeight: 700, color: "#f1f5f9" }}>Pengaturan Lembaga</h3>
+        
+        <div className="grid-responsive grid-res-2 grid-res-3 mb-10">
+          <Link href="/settings" className="no-underline group">
+            <div className="glass-card-light p-6 border-l-4 border-l-amber-500 h-full">
+              <div className="flex items-center gap-3 mb-2 group-hover:translate-x-1 transition-transform">
+                <FiSettings className="text-xl text-amber-500" />
+                <h3 className="text-[15px] font-bold text-dark-100">Pengaturan Lembaga</h3>
               </div>
-              <p style={{ fontSize: "13px", color: "#64748b", lineHeight: "1.5" }}>
+              <p className="text-[13px] text-dark-500 leading-relaxed">
                 Atur nama lembaga, kepala madrasah, NIP, dan format kartu ujian.
               </p>
             </div>
           </Link>
 
-          <Link href="/peserta" style={{ textDecoration: "none" }}>
-            <div className="glass-card-light" style={{
-              padding: "24px",
-              cursor: "pointer",
-              transition: "all 0.3s ease",
-              borderLeft: "4px solid #10b981",
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
-                <FiUserPlus size={22} color="#10b981" />
-                <h3 style={{ fontSize: "15px", fontWeight: 700, color: "#f1f5f9" }}>Tambah Peserta</h3>
+          <Link href="/peserta" className="no-underline group">
+            <div className="glass-card-light p-6 border-l-4 border-l-primary-500 h-full">
+              <div className="flex items-center gap-3 mb-2 group-hover:translate-x-1 transition-transform">
+                <FiUserPlus className="text-xl text-primary-500" />
+                <h3 className="text-[15px] font-bold text-dark-100">Tambah Peserta</h3>
               </div>
-              <p style={{ fontSize: "13px", color: "#64748b", lineHeight: "1.5" }}>
+              <p className="text-[13px] text-dark-500 leading-relaxed">
                 Input data peserta ujian: nama, NISN, tempat tanggal lahir.
               </p>
             </div>
           </Link>
 
-          <Link href="/cetak" style={{ textDecoration: "none" }}>
-            <div className="glass-card-light" style={{
-              padding: "24px",
-              cursor: "pointer",
-              transition: "all 0.3s ease",
-              borderLeft: "4px solid #60a5fa",
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
-                <FiPrinter size={22} color="#60a5fa" />
-                <h3 style={{ fontSize: "15px", fontWeight: 700, color: "#f1f5f9" }}>Cetak Kartu PDF</h3>
+          <Link href="/cetak" className="no-underline group">
+            <div className="glass-card-light p-6 border-l-4 border-l-blue-500 h-full">
+              <div className="flex items-center gap-3 mb-2 group-hover:translate-x-1 transition-transform">
+                <FiPrinter className="text-xl text-blue-500" />
+                <h3 className="text-[15px] font-bold text-dark-100">Cetak Kartu PDF</h3>
               </div>
-              <p style={{ fontSize: "13px", color: "#64748b", lineHeight: "1.5" }}>
+              <p className="text-[13px] text-dark-500 leading-relaxed">
                 Preview dan download kartu ujian dalam format PDF A4.
               </p>
             </div>
           </Link>
         </div>
 
-        {/* Info */}
-        <div className="glass-card-light" style={{
-          padding: "20px 24px",
-          display: "flex",
-          alignItems: "center",
-          gap: "12px",
-        }}>
-          <HiOutlineLightBulb size={22} color="#f59e0b" style={{ flexShrink: 0 }} />
-          <div>
-            <p style={{ fontSize: "13px", color: "#94a3b8", lineHeight: "1.5" }}>
-              <strong style={{ color: "#e2e8f0" }}>Langkah penggunaan:</strong> Pertama atur{" "}
-              <strong>Pengaturan Lembaga</strong> → Tambah <strong>Data Peserta</strong> → Lalu{" "}
-              <strong>Cetak Kartu PDF</strong>. Semua data tersimpan di browser (LocalStorage).
-            </p>
+        {/* Support/Info Info */}
+        <div className="glass-card-light px-6 py-5 flex items-center gap-4">
+          <HiOutlineLightBulb className="text-2xl text-amber-500 shrink-0" />
+          <div className="text-[13px] text-dark-400 leading-relaxed">
+            <span className="font-bold text-dark-200">Langkah penggunaan:</span> Pertama atur <span className="text-amber-500 font-bold">Pengaturan Lembaga</span> → Tambah <span className="text-primary-500 font-bold">Data Peserta</span> → Lalu <span className="text-blue-500 font-bold">Cetak Kartu PDF</span>. Semua data tersimpan aman secara lokal.
           </div>
         </div>
       </main>
