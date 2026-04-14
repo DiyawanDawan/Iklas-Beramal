@@ -279,7 +279,7 @@ export default function ImportExcel({ onImport, settings, isOpen, onClose }) {
                            </div>
                            <h5 className="text-dark-50 font-black text-sm mb-2">Waduh! Ada Kendala Kecil</h5>
                            <p className="text-dark-400 text-[12px] mb-6 max-w-[250px] mx-auto italic">
-                             "{aiError}"
+                             &quot;{aiError}&quot;
                            </p>
                            <button 
                              onClick={handleAnalyzeAI}

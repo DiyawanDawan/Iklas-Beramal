@@ -1,6 +1,12 @@
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import Footer from "@/components/Footer";
+import { Inter } from "next/font/google";
+
+const inter = Inter({ 
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
 
 export const metadata = {
   title: "Ikhlas Beramal - Solusi Digital Madrasah",
@@ -11,15 +17,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="id">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="antialiased flex flex-col min-h-screen">
+      <body className={`${inter.className} antialiased flex flex-col min-h-screen`}>
         <main className="flex-grow">
           {children}
         </main>

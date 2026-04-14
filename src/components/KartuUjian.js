@@ -1,6 +1,7 @@
 "use client";
 
 import { formatTTL } from "@/lib/constants";
+import Image from "next/image";
 
 export default function KartuUjian({ peserta, settings }) {
   const { 
@@ -27,7 +28,13 @@ export default function KartuUjian({ peserta, settings }) {
     <div className="kartu-container">
       {/* Header Resmi */}
       <div className="kartu-header">
-        <img src="/image.png" alt="Logo" className="header-logo" />
+        <Image 
+          src="/image.png" 
+          alt="Logo" 
+          width={45}
+          height={45}
+          className="header-logo" 
+        />
         <div className="header-text">
           <h3 className="text-[12px] font-black m-0 leading-tight uppercase">KARTU PESERTA {namaUjian}</h3>
           <p className="text-[11px] m-0 mt-0.5 font-bold uppercase">TAHUN PELAJARAN {tahunPelajaran}</p>

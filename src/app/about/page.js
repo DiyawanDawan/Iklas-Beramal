@@ -34,7 +34,7 @@ export default function AboutPage() {
                 <div>
                   <h2 className="text-2xl font-black text-dark-50 mb-4">Visi & Nilai Dasar</h2>
                   <p className="text-dark-400 leading-relaxed text-[15px]">
-                    <strong className="text-primary-500 italic">"Ikhlas Beramal"</strong> bagi kami bukan sekadar slogan di gerbang madrasah. Ia adalah prinsip teknik yang kami tanamkan di setiap baris kode. Kami percaya bahwa administrasi pendidikan berkualitas harus dapat diakses oleh semua tanpa hambatan biaya atau kerumitan sistem.
+                    <strong className="text-primary-500 italic">&quot;Ikhlas Beramal&quot;</strong> bagi kami bukan sekadar slogan di gerbang madrasah. Ia adalah prinsip teknik yang kami tanamkan di setiap baris kode. Kami percaya bahwa administrasi pendidikan berkualitas harus dapat diakses oleh semua tanpa hambatan biaya atau kerumitan sistem.
                   </p>
                 </div>
               </div>

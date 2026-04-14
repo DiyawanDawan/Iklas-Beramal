@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { FaInstagram, FaGithub, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import { 
@@ -88,9 +89,11 @@ export default function DeveloperPage() {
           {/* HEADER PROFILE SECTION */}
           <div className="mb-14">
             <div className="profile-photo-wrapper mb-6 relative inline-block">
-               <img 
+               <Image 
                  src="/developer.jpeg" 
                  alt="Diyawan"
+                 width={120}
+                 height={120}
                  className="profile-photo shadow-2xl"
                />
                <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-primary-500 rounded-full border-4 border-dark-950 flex items-center justify-center">
