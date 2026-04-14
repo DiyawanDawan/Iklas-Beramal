@@ -14,7 +14,12 @@ import {
   FiPrinter, FiLoader, FiUploadCloud, FiHome, FiUserCheck, 
   FiHash, FiChevronLeft, FiChevronRight, FiAlertCircle 
 } from "react-icons/fi";
-import { HiOutlineUsers, HiOutlineClipboardList, HiOutlineOfficeBuilding } from "react-icons/hi";
+import { 
+  HiOutlineUsers, 
+  HiOutlineClipboardList, 
+  HiOutlineOfficeBuilding, 
+  HiOutlineShieldCheck 
+} from "react-icons/hi";
 
 // --- Komponen Modal Konfirmasi Kustom ---
 const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, type = "danger" }) => {
@@ -307,8 +312,21 @@ export default function PesertaPage() {
           </div>
         </div>
 
-        {/* --- FORM INPUT PESERTA --- */}
-        <div className="glass-card slide-up p-6 mb-6 border-white/5">
+        {/* --- SECURITY INFORMATION BANNER --- */}
+        <div className="glass-card p-5 mb-8 border-emerald-500/10 bg-emerald-500/[0.02] flex items-start gap-4 slide-up">
+           <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 shrink-0">
+              <HiOutlineShieldCheck size={22} />
+           </div>
+           <div>
+              <h3 className="text-sm font-bold text-emerald-400 m-0 uppercase tracking-widest">Kedaulatan & Keamanan Data</h3>
+              <p className="text-[12px] text-dark-400 m-0 mt-1 leading-relaxed">
+                Demi privasi penuh, seluruh data peserta dan pengaturan lembaga Anda <strong>hanya disimpan di memori browser perangkat ini (Local Storage)</strong>. Kami tidak mengirimkan atau menyimpan data Anda di server mana pun. Data tetap milik Anda sepenuhnya.
+              </p>
+           </div>
+        </div>
+
+        {/* --- SECTION DAFTAR PESERTA --- */}
+        <div className="glass-card slide-up p-6 border-white/5">
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-xs font-black text-primary-500 flex items-center gap-2 m-0 uppercase tracking-widest">
               {editingId ? <><FiEdit2 /> Edit Peserta</> : <><FiPlus /> Tambah Baru</>}
