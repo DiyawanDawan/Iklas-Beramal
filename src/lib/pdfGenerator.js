@@ -24,7 +24,12 @@ export async function generatePDF(elementId, filename = "kartu-ujian.pdf") {
       backgroundColor: "#ffffff",
       logging: false,
       width: 794,
+      height: page.scrollHeight,
       windowWidth: 794,
+      windowHeight: page.scrollHeight,
+      scrollX: 0,
+      scrollY: 0,
+      allowTaint: false,
     });
 
     const imgData = canvas.toDataURL("image/jpeg", 0.95);

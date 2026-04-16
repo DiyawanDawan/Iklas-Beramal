@@ -6,6 +6,10 @@ export const MONTHS_ID = [
 export function formatTanggalIndonesia(dateStr) {
   if (!dateStr) return "";
   const date = new Date(dateStr);
+  
+  // Jika tanggal tidak valid, kembalikan string aslinya (mencegah NaN Undefined NaN)
+  if (isNaN(date.getTime())) return dateStr;
+  
   const day = date.getDate();
   const month = MONTHS_ID[date.getMonth()];
   const year = date.getFullYear();

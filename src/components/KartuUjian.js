@@ -4,36 +4,36 @@ import { formatTTL } from "@/lib/constants";
 import Image from "next/image";
 
 export default function KartuUjian({ peserta, settings }) {
-  const { 
-    namaUjian, 
-    tahunPelajaran, 
-    namaLembaga, 
+  const {
+    namaUjian,
+    tahunPelajaran,
+    namaLembaga,
     nsm,
-    tempatCetak, 
-    tanggalCetak, 
-    jabatanKepala, 
-    namaKepala, 
-    nipKepala 
+    tempatCetak,
+    tanggalCetak,
+    jabatanKepala,
+    namaKepala,
+    nipKepala
   } = settings;
 
-  const tglCetakLocale = tanggalCetak 
+  const tglCetakLocale = tanggalCetak
     ? new Date(tanggalCetak).toLocaleDateString("id-ID", {
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-      })
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    })
     : "";
 
   return (
     <div className="kartu-container">
       {/* Header Resmi */}
       <div className="kartu-header">
-        <Image 
-          src="/image.png" 
-          alt="Logo" 
+        <Image
+          src="/image.png"
+          alt="Logo"
           width={45}
           height={45}
-          className="header-logo" 
+          className="header-logo"
         />
         <div className="header-text">
           <h3 className="text-[12px] font-black m-0 leading-tight uppercase">KARTU PESERTA {namaUjian}</h3>
@@ -43,7 +43,7 @@ export default function KartuUjian({ peserta, settings }) {
       </div>
 
       <div className="kartu-body">
-        <h2 className="kartu-title" style={{ fontSize: '14px', marginBottom: '8px' }}>KARTU PESERTA UJIAN</h2>
+        <h2 className="kartu-title" style={{ fontSize: '14px', marginBottom: '8px' }}>KARTU PESERTA {namaUjian}</h2>
 
         <table className="kartu-table">
           <tbody>
@@ -72,25 +72,28 @@ export default function KartuUjian({ peserta, settings }) {
           </tbody>
         </table>
 
-        {/* Footer Area with Photo and TTD */}
-        <div className="kartu-footer">
+        {/* Spacer to push footer down and prevent overlap - Important for html2canvas */}
+        <div style={{ flex: 1, minHeight: '10px' }}></div>
+
+        {/* Footer Area with Photo and TTD - Modified for PDF Stability */}
+        <div className="kartu-footer" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', paddingBottom: '8px' }}>
           {/* Photo Box */}
-          <div className="photo-box">
-             PAS FOTO<br/>3 x 4
+          <div className="photo-box" style={{ width: '60px', height: '80px', border: '1px solid #000', flexShrink: 0 }}>
+            PAS FOTO<br />3 x 4
           </div>
 
           {/* TTD Box */}
-          <div className="ttd-box">
-            <p className="m-0 mb-5" style={{ fontSize: '12px' }}>
+          <div className="ttd-box" style={{ textAlign: 'left', width: '180px', flexShrink: 0 }}>
+            <p className="m-0 mb-4" style={{ fontSize: '12px' }}>
               {tempatCetak}, {tglCetakLocale}
               <br />
               {jabatanKepala},
             </p>
-            <p className="m-0 font-bold underline uppercase" style={{ fontSize: '12px' }}>
+            <p className="m-0 font-bold underline" style={{ fontSize: '12px' }}>
               {namaKepala}
             </p>
             <p className="m-0 text-[11px]">
-              NIP. {nipKepala}
+              NIP. {nipKepala || "-"}
             </p>
           </div>
         </div>
